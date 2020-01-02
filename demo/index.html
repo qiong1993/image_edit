@@ -1,16 +1,48 @@
 <!DOCTYPE html>
 <html>
     <body> 
-        <div>
+        <!-- <div>
             原始图片
             <img src='./image/cat1.jpg'></img>
+        </div> -->
+        <div id="app">
+            <!-- <canvas id="myCanvas" width="200" height="100"></canvas> -->
         </div>
-        <div id="app"></div>
     </body>
-    <script type="text/javascript" src="http://code.jquery.com/jquery-3.4.1.slim.min.js"></script></body>
+    <script type="text/javascript" src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
     <script>
+        const imgUrl = './image/cat1.jpg'
         window.onload = function(){
-            new ImageEdit({el:'app'})
+            //new ImageEdit({el:'app'})
+            // var c=document.getElementById("myCanvas");
+            // var ctx=c.getContext("2d");
+            // ctx.fillStyle="#FF0000";
+            // ctx.fillRect(0,0,150,75);
+
+            // const rootElement = document.getElementById("app")
+            // rootElement.classList.add("image_edit_container")
+            // const imageElement = document.createElement('img')
+            // imageElement.src = imgUrl
+            // const canvasElement = document.createElement('canvas')
+            // rootElement.append(imageElement)
+            // rootElement.append(canvasElement)
+            // const canvasContext = canvasElement.getContext("2d")
+            // canvasContext.drawImage(imageElement,0,0)
+            const $root = $('#app')
+            $root.addClass('image_edit_container')
+            const currentCanvasId = 'canvas' + Date.now()
+            const baseHtml = '<canvas id="'+currentCanvasId+'"></canvas>'
+            $root.append(baseHtml)
+
+            const canvasElement = document.getElementById(currentCanvasId)
+            const canvasContext = canvasElement.getContext("2d")
+            //const imageElement = document.getElementById('image')
+            //imageElement.src = imgUrl
+            const image = new Image()
+            image.src = imgUrl
+            image.onload = function(){
+                canvasContext.drawImage(image,0,0)
+            }
         }
     </script>
 </html>

@@ -4,6 +4,7 @@ const defaultOptions = {
     el:'image_container'
 }
 
+
 class ImageEdit {
 
     constructor(param={}){
@@ -11,11 +12,14 @@ class ImageEdit {
         this.init()
     }
     
-    init(a, b) {
+    init() {
         const rootElement = $('#'+this.el);
         if(!rootElement){
-            
-        }
+            const rootElement = document.createElement('div')
+            rootElement.setAttribute('id',this.el)
+            $(body).append(rootElement)
+        }    
+
     }
 }
 

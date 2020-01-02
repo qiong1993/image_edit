@@ -40,9 +40,9 @@ module.exports = {
             filename: 'index.html'
         }),
         extractSass,
-        new webpack.ProvidePlugin({
-            $:'jquery'
-        })
+        // new webpack.ProvidePlugin({
+        //     $:'jQuery'
+        // })
     ],
     module:{
         rules:[
@@ -71,7 +71,7 @@ module.exports = {
             }
         ]
     },
-    externals:{
-        jquery: 'jquery'
-    }
+    // externals:{
+    //     jquery: 'jquery'
+    // }
 }
