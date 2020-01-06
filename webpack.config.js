@@ -28,6 +28,7 @@ module.exports = {
         open:true,
         port:4000,
     },
+    devtool:'inline-source-map',
     plugins:[
         new CleanWebpackPlugin(),
         new webpack.HotModuleReplacementPlugin(),
@@ -52,7 +53,10 @@ module.exports = {
                 use:{
                     loader:'babel-loader',
                     options:{
-                        presets:['@babel/preset-env']
+                        presets:['@babel/preset-env'],
+                        plugins:[
+                            '@babel/plugin-proposal-class-properties'
+                        ]
                     }
                 }
 

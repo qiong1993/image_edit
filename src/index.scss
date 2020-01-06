@@ -1,0 +1,34 @@
+.image_edit_container{
+    position: relative;
+    canvas{
+        width: 100%;
+    }
+    .originCanvas{
+        position: absolute;
+        z-index: -1;
+    }
+    .edit_tools_container{
+        .hover_link{
+            display: inline-block;
+        }
+        .tool_but {
+            // width: 2.8rem;
+            // height: 0.45rem;
+        }
+    }
+}
+
+.hover_link{
+    position: relative;
+    .list_show{
+        display: none;
+        position: absolute;
+        top: 23px;
+        width: 100%;
+    }
+    &:hover{
+        .list_show{
+            display: block;
+        }
+    }
+}
