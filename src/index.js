@@ -39,6 +39,7 @@ class ImageEdit {
 
     destroy(){
         $('#'+options.el).empty()  
+        this.toolManager.destroy()
         this.toolManager= null
     }
 }

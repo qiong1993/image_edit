@@ -1,5 +1,5 @@
 /**
- * 绘图工具切换
+ * 绘图工具管理
  * canvas manager 创建 管理
  */
 import {PenTool,EraserTool} from './ShapeTool'
@@ -36,11 +36,12 @@ const viceToolRelated = {
     constructor({canvasManager,tools,$rootElement,style={},viceTools}){
         if(canvasManager)this.addCanvasManager(canvasManager)
         const toolContainer = document.createElement('div')
-        toolContainer.classList = ['edit_tools_container']
+        toolContainer.classList.add('edit_tools_container')
         $rootElement.append(toolContainer) 
         this.initTools(tools,$(toolContainer))
         this.initViceTools(viceTools,$(toolContainer))
         this.currentStyle = {...this.currentStyle,style}
+        this.register()
     }
 
     addCanvasManager(canvasManager){
@@ -53,7 +54,7 @@ const viceToolRelated = {
             const ShapeTool = toolRelated[item]
             if(!ShapeTool)return
             const editButton = document.createElement('button')
-            editButton.classList = 'tool_but tool_'+item
+            editButton.classList.add(['tool_but','tool_'+item])
             editButton.textContent = item
             $rootElement.append(editButton)
             const shapeTool = new ShapeTool()
@@ -76,8 +77,10 @@ const viceToolRelated = {
     changeTool(shapeTool){
         if(this.currentShapeTool)this.currentShapeTool.unRegister()
         this.currentShapeTool = shapeTool
-        shapeTool.register(this.currentCanvasManager)
+        shapeTool.setRootElementOffset(this.rootElementOffset)
+        shapeTool.register(this.currentCanvasManager,this.rootElementOffset)
         this.setCurrentStyle()
+        this.updateParentElementOffset()
     }
 
     setCurrentStyle(param={}){
@@ -87,6 +90,22 @@ const viceToolRelated = {
 
     getCurrentCanvasImage(){
         return this.currentCanvasManager.saveImg()
+    }
+
+    updateParentElementOffset = () =>{
+        setTimeout(()=>{
+            this.rootElementOffset = $(this.currentCanvasManager.canvasElement).offset()
+            if(this.currentShapeTool)this.currentShapeTool.setRootElementOffset(this.rootElementOffset)
+        })
+        
+    }
+
+    register(){
+        window.addEventListener('resize',this.updateParentElementOffset)
+    }
+
+    destroy(){
+        window.removeEventListener('resize',this.updateParentElementOffset)
     }
 
 }
