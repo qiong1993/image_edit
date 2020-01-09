@@ -15,38 +15,63 @@ class CanvasManager{
     }
 
     initCanvas($rootElement,options={}){
-        let {imgPath,width,height} = options
         const currentCanvasId = 'canvas' + Date.now()
         const originCanvasId = 'origin' + currentCanvasId
-        const baseHtml = `
+        const baseHtml = `<div class="canvas_container">
             <canvas class='originCanvas' id="${originCanvasId}"></canvas>
-            <canvas id="${currentCanvasId}"></canvas>
+            <canvas id="${currentCanvasId}"></canvas></div>
         `
         $rootElement.append(baseHtml)
-
         const canvasElement = document.getElementById(currentCanvasId)
         const canvasContext = canvasElement.getContext("2d")
         const originElement = document.getElementById(originCanvasId)
         const originContext = originElement.getContext("2d")
-        const image = new Image()
-        image.src = imgPath
-        image.onload = function(){
-            width = width ? width : canvasElement.offsetWidth
-            height = height ? height : canvasElement.offsetHeight
-            canvasElement.width = width
-            canvasElement.height = height
-            canvasContext.drawImage(image,0,0,width,height)
-            
-            originElement.width = width
-            originElement.height = height
-            originContext.drawImage(image,0,0,width,height)
+        const {imgPath,imgFile} = options
+        if(imgFile){
+            const reader = new FileReader();
+            reader.onloadend = e => {
+                this.initBackImage(e.target.result);
+            };
+            reader.readAsDataURL(imgFile)
+        }else if(imgPath){
+            this.initBackImage(imgPath)
         } 
-
-        this.imgInstance = image
 
         this.canvasElement = canvasElement
         this.canvasContext = canvasContext
-        this.originContext = document.getElementById(originCanvasId).getContext("2d")
+        this.originElement = originElement
+        this.originContext = originContext
+    }
+
+    initBackImage(imgPath){
+        const {canvasElement,canvasContext,originContext,originElement} = this
+        const image = new Image()
+        image.src = imgPath
+        image.onload = function(){
+            const canvasContainerElement = canvasElement.parentNode
+            let width = canvasContainerElement.offsetWidth
+            const maxHeight = canvasContainerElement.parentNode.offsetHeight
+            
+            const imageWidth = image.width
+            const imageHeight = image.height
+
+            let actualHeight = parseInt((width/imageWidth)*imageHeight)
+            
+            if(actualHeight > maxHeight){
+                actualHeight = maxHeight
+                width =  parseInt((actualHeight/imageHeight)*imageWidth)
+            }
+            
+            canvasElement.width = width
+            canvasElement.height = actualHeight
+            canvasContext.drawImage(image,0,0,width,actualHeight)
+            
+            originElement.width = width
+            originElement.height = actualHeight
+            originContext.drawImage(image,0,0,width,actualHeight)
+        } 
+
+        this.imgInstance = image
     }
 
     addDraw(shape){

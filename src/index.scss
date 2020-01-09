@@ -1,19 +1,35 @@
 .image_edit_container{
-    position: relative;
-    canvas{
-        width: 100%;
-    }
-    .originCanvas{
+    //position: relative;
+    height: 100%;
+    .canvas_container{
         position: absolute;
-        z-index: -1;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 100%;
+        max-height: 80%;
+        text-align: center;
+        .originCanvas{
+            position: absolute;
+            z-index: -1;
+        }
     }
+    
     .edit_tools_container{
+        position: absolute;
+        bottom: 0;
+        padding: .2rem 0;
+        width: 100%;
+        text-align: center;
         .hover_link{
             display: inline-block;
         }
         .tool_but {
-            // width: 2.8rem;
-            // height: 0.45rem;
+            padding: .1rem 0.3rem;
+            border-radius: 30px;
+            &.active{
+                background: rgb(85, 153, 230);
+                color:#fff;
+            }
         }
     }
 }

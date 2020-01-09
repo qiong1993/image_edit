@@ -1,10 +1,11 @@
 /**形状绘制工具 */
 import {Pen,Eraser} from './Shape'
 
-function getCurrentPos(event,rootElementOffset){
+function getCurrentPos(event,rootElement){
     const e = event.touches ? event.touches[0] : event
-    const disX = e.pageX - rootElementOffset.top
-    const disY = e.pageY - rootElementOffset.left
+    const rootElementOffset = Zepto(rootElement).offset()
+    const disX = e.pageX - rootElementOffset.left
+    const disY = e.pageY - rootElementOffset.top
     return [disX,disY]
     
 }
@@ -30,15 +31,15 @@ class ShapeTool{
         this.currentStyle = {...this.currentStyle,...style}
     }
 
-    setRootElementOffset(offset){
-        this.rootElementOffset = offset
-    }
+    // setRootElementOffset(offset){
+    //     this.rootElementOffset = offset
+    // }
 
     onMouseDown = ()=>{
         const {Shape,currentStyle} = this
-        const {canvasContext} = this.currentCanvasManager
+        const {canvasContext,canvasElement} = this.currentCanvasManager
         const {lineWidth,strokeStyle} = currentStyle
-        this.currentShape = new Shape({lineWidth,strokeStyle,startPos:getCurrentPos(event,this.rootElementOffset)})
+        this.currentShape = new Shape({lineWidth,strokeStyle,startPos:getCurrentPos(event,canvasElement)})
         this.currentShape.draw(canvasContext)
 
         document.addEventListener('mousemove',this.onMouseMove)
@@ -49,8 +50,8 @@ class ShapeTool{
     }
 
     onMouseMove = () => {
-        const {canvasContext} = this.currentCanvasManager
-        this.currentShape.addPoint(getCurrentPos(event,this.rootElementOffset),canvasContext)
+        const {canvasContext,canvasElement} = this.currentCanvasManager
+        this.currentShape.addPoint(getCurrentPos(event,canvasElement),canvasContext)
     }
 
     onMouseUp = () => {
@@ -81,8 +82,8 @@ class EraserTool extends ShapeTool{
     }
 
     onMouseMove = () => {
-        const {canvasContext,originContext} = this.currentCanvasManager
-        this.currentShape.addPoint(getCurrentPos(event,this.rootElementOffset),canvasContext,originContext)
+        const {canvasContext,originContext,canvasElement} = this.currentCanvasManager
+        this.currentShape.addPoint(getCurrentPos(event,canvasElement),canvasContext,originContext)
     }
 }
 

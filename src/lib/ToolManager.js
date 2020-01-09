@@ -38,10 +38,12 @@ const viceToolRelated = {
         const toolContainer = document.createElement('div')
         toolContainer.classList.add('edit_tools_container')
         $rootElement.append(toolContainer) 
-        this.initTools(tools,$(toolContainer))
-        this.initViceTools(viceTools,$(toolContainer))
+        const $toolContainer = Zepto(toolContainer)
+        this.$toolContainer = $toolContainer
+        this.initTools(tools,$toolContainer)
+        this.initViceTools(viceTools,Zepto(toolContainer))
         this.currentStyle = {...this.currentStyle,style}
-        this.register()
+        //this.register()
     }
 
     addCanvasManager(canvasManager){
@@ -50,16 +52,21 @@ const viceToolRelated = {
     }
 
     initTools(tools=[],$rootElement){
-        tools.forEach(item => {
+        tools.forEach((item,index) => {
             const ShapeTool = toolRelated[item]
             if(!ShapeTool)return
             const editButton = document.createElement('button')
-            editButton.classList.add(['tool_but','tool_'+item])
+            const className = 'tool_'+item
+            editButton.classList.add('tool_but')
+            editButton.classList.add(className)
             editButton.textContent = item
             $rootElement.append(editButton)
             const shapeTool = new ShapeTool()
             editButton.onclick = ()=>{
-                this.changeTool(shapeTool)
+                this.changeTool(shapeTool,className)
+            }
+            if(index === 0){
+                this.changeTool(shapeTool,className)
             }
         })
     }
@@ -74,13 +81,15 @@ const viceToolRelated = {
         })
     }
 
-    changeTool(shapeTool){
+    changeTool(shapeTool,className){
         if(this.currentShapeTool)this.currentShapeTool.unRegister()
         this.currentShapeTool = shapeTool
-        shapeTool.setRootElementOffset(this.rootElementOffset)
-        shapeTool.register(this.currentCanvasManager,this.rootElementOffset)
+        //shapeTool.setRootElementOffset(this.rootElementOffset)
+        shapeTool.register(this.currentCanvasManager)
         this.setCurrentStyle()
-        this.updateParentElementOffset()
+        //this.updateParentElementOffset()
+        this.$toolContainer.find('.tool_but').removeClass('active')
+        this.$toolContainer.find('.'+className).addClass('active')
     }
 
     setCurrentStyle(param={}){
@@ -92,21 +101,25 @@ const viceToolRelated = {
         return this.currentCanvasManager.saveImg()
     }
 
-    updateParentElementOffset = () =>{
-        setTimeout(()=>{
-            this.rootElementOffset = $(this.currentCanvasManager.canvasElement).offset()
-            if(this.currentShapeTool)this.currentShapeTool.setRootElementOffset(this.rootElementOffset)
-        })
+    getCurrentCanvasIsEdit(){
+        return this.currentCanvasManager.shapeList.length > 0
+    }
+
+    // updateParentElementOffset = () =>{
+    //     setTimeout(()=>{
+    //         this.rootElementOffset = Zepto(this.currentCanvasManager.canvasElement).offset()
+    //         if(this.currentShapeTool)this.currentShapeTool.setRootElementOffset(this.rootElementOffset)
+    //     })
         
-    }
+    // }
 
-    register(){
-        window.addEventListener('resize',this.updateParentElementOffset)
-    }
+    // register(){
+    //     window.addEventListener('resize',this.updateParentElementOffset)
+    // }
 
-    destroy(){
-        window.removeEventListener('resize',this.updateParentElementOffset)
-    }
+    // destroy(){
+    //     window.removeEventListener('resize',this.updateParentElementOffset)
+    // }
 
 }
 
