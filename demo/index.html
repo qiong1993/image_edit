@@ -1,30 +1,500 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-    </head>
-    <body> 
-        <!-- <div>
-            原始图片
-            <img src='./image/cat1.jpg'></img>
-        </div> -->
-        <div id="app">
-            <!-- <canvas id="myCanvas" width="200" height="100"></canvas> -->
-        </div>
-        <div>
-            <button id="save">save</button>
-            <img id='testImg'></img>
 
-        </div>
-    </body>
-    <script type="text/javascript" src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
-    <script>
-        window.onload = function(){
-           var imageEdit =  new ImageEdit({el:'app',imgPath:'./image/model_small.jpg'})
-           $('#save').on('click',function(){
-               var image = imageEdit.getCurrentImage()
-               $('#testImg').attr('src',image)
-           })
+<head>
+    <meta charset="utf-8">
+    <title>胖猫数钢筋</title>
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no">
+    <meta name="screen-orientation" content="portrait" />
+    <link rel="stylesheet" href="/Resources/2.0/css/photoswipe.css">
+    <link rel="stylesheet" href="/Resources/2.0/css/default-skin/default-skin.css">
+    <link rel="stylesheet" href="/Resources/2.0/css/public.css">
+    <link rel="stylesheet" href="/Resources/2.0/css/count.css">
+    <script src="/Resources/2.0/js/size.js"></script>
+    <style>
+        .layui-m-layersection .skin-report.layui-m-layer-footer .layui-m-layerbtn span {
+            padding: 0.15rem 0;
+            color: #40AFFE;
+            border-radius: 5px;
+            background: #fff;
         }
-    </script>
+
+        .skin-report .layui-m-layercont {
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="count">
+        <div class="upload">
+            <div class='confirm-img my-gallery'>
+                <figure>
+                    <a href="/Resources/2.0/images/test.png" data-size="1005x720">
+                        <img src="/Resources/2.0/images/test.png" alt="" class="upload-img">
+                    </a>
+                </figure>
+            </div>
+            <div class="upload-bottom">
+                <ul class="upload-introduce">
+                    <li>
+                        1.给需要数的钢筋拍张照片
+                    </li>
+                    <li>
+                        2.胖猫会数好有多少根钢筋
+                    </li>
+                </ul>
+                <!-- 请上传螺纹横截面的清晰图片 -->
+                <div class="upload-th" style="display: none">
+                    请上传螺纹横截面的清晰图片
+                </div>
+                <!-- 上传结果 -->
+                <div class="upload-result" style="display: none">
+                    <div class="fl">
+                        结果： <b>210 根</b>
+                    </div>
+                    <div class="fr">
+                        <a href="javascript:;" class="result-icon result-favor"></a>
+                        <a href="javascript:;" class="result-icon result-oppose"></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- 从相册中选择/拍照数钢筋 -->
+        <div class="upload-btn">
+            <a href="javascript:;" class="photo">
+                <input type="file" id="photo">
+                <label for="photo">从相册中选择</label>
+            </a>
+            <a href="javascript:;" class="redButton take">
+                <input type="file" id="take" capture="camera" accept="image/*">
+                <label for="take">拍照数钢筋</label>
+            </a>
+        </div>
+        <!-- 再数一次/分享给朋友 -->
+        <div class="upload-btn" style="display: none">
+            <a href="javascript:;" class="more redButton-border">
+                再数一次
+            </a>
+            <a href="javascript:;" class="redButton">
+                分享给朋友
+            </a>
+        </div>
+    </div>
+
+    </div>
+    <!-- Root element of PhotoSwipe. Must have class pswp. -->
+    <div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+        <!-- Background of PhotoSwipe. 
+         It's a separate element as animating opacity is faster than rgba(). -->
+        <div class="pswp__bg"></div>
+        <!-- Slides wrapper with overflow:hidden. -->
+        <div class="pswp__scroll-wrap">
+            <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+            <div class="pswp__container">
+                <div class="pswp__item"></div>
+                <div class="pswp__item"></div>
+                <div class="pswp__item"></div>
+            </div>
+            <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+            <div class="pswp__ui pswp__ui--hidden">
+                <div class="pswp__top-bar">
+                    <!--  Controls are self-explanatory. Order can be changed. -->
+                    <div class="pswp__counter"></div>
+                    <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+                    <button class="pswp__button pswp__button--share" title="Share"></button>
+                    <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+                    <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+                    <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+                    <!-- element will get class pswp__preloader--active when preloader is running -->
+                    <div class="pswp__preloader">
+                        <div class="pswp__preloader__icn">
+                            <div class="pswp__preloader__cut">
+                                <div class="pswp__preloader__donut"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                    <div class="pswp__share-tooltip"></div>
+                </div>
+                <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+                </button>
+                <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+                </button>
+                <div class="pswp__caption">
+                    <div class="pswp__caption__center"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+<!-- 再数一次弹窗 -->
+<div class="layer-why-wrap" style="display: none;">
+    <div class="layer-why">
+        <img src="/Resources/2.0/images/why.png" alt="" class="why-img">
+        <div class="why-txt">
+            是胖猫数错了吗？
+        </div>
+        <div class="operate-btn">
+            <a href="javascript:;" class="fl operate-btn-red-border">
+                用的不爽
+            </a>
+            <a href="javascript:;" class="fr operate-btn-red btn-error">
+                数错了
+            </a>
+        </div>
+    </div>
+</div>
+
+<!-- 输入正确根数弹窗 -->
+<div class="layer-num-wrap" style="display: none;">
+    <div class="layer-why layer-num">
+        <img src="/Resources/2.0/images/why.png" alt="" class="why-img">
+
+        <div class="why-txt">
+            正确是多少根呢？
+        </div>
+        <div class="num-enter-wrap">
+            <input type="text" placeholder="输入正确的数量" class="num-enter">
+        </div>
+        <div class="operate-btn">
+            <a href="javascript:;" class="operate-btn-red btn-ok">
+                确定
+            </a>
+        </div>
+    </div>
+
+</div>
+
+<!-- 图片编辑弹框-->
+<div class="layer-image-edit" style="display: none;">
+    <div class="layer-image back-wrap" style="height: 100%;">
+        <div class="back flexall-hor">
+            <a href="javascript:;" class="back-arrow cancel">
+                <img src="/Resources/2.0/images/back-arrow.png" alt="">
+            </a>
+            <a href="javascript:;" class="complete">
+                完成
+            </a>
+        </div>
+        
+        <div class="edit_image"></div>
+        <a href="javascript:;" class="back-revoke cancel"></a>
+    </div>       
+</div>
+
+
+<script src="/Resources/2.0/js/zepto.js"></script>
+<script src="/Resources/2.0/js/photoswipe.min.js"></script>
+<script src="/Resources/2.0/js/photoswipe-ui-default.min.js"></script>
+<script src="/Resources/2.0/layer_mobile/layer.js"></script>
+<!-- <script src="/Resources/2.0/js/image-edit.js"></script> -->
+
+<script>
+    // 切换赞成反对图标高亮
+    Zepto('.result-icon').on('click', function () {
+        Zepto(this).toggleClass('active')
+    })
+
+    //再数一次弹窗 
+    Zepto('.more').on('click', function () {
+        layer.open({
+            shadeClose: false,
+            scrollbar: false,
+            content: Zepto('.layer-why-wrap').html(),
+            skin: 'skin-why',
+        });
+        // 关闭
+        Zepto('.operate-btn>a').off('click').on('click', function () {
+            layer.closeAll();
+            if (Zepto(this).hasClass('btn-error')) {
+                // 数错了
+                layer.open({
+                    shadeClose: false,
+                    scrollbar: false,
+                    content: Zepto('.layer-num-wrap').html(),
+                    skin: 'skin-why skin-num',
+                });
+                Zepto('.operate-btn .btn-ok').off('click').on('click', function () {
+                    layer.closeAll();
+                })
+            }
+        })
+    })
+
+
+    // 图片预览
+    var initPhotoSwipeFromDOM = function (gallerySelector) {
+
+        // parse slide data (url, title, size ...) from DOM elements 
+        // (children of gallerySelector)
+        var parseThumbnailElements = function (el) {
+            var thumbElements = el.childNodes,
+                numNodes = thumbElements.length,
+                items = [],
+                figureEl,
+                linkEl,
+                size,
+                item;
+
+            for (var i = 0; i < numNodes; i++) {
+
+                figureEl = thumbElements[i]; // <figure> element
+
+                // include only element nodes 
+                if (figureEl.nodeType !== 1) {
+                    continue;
+                }
+
+                linkEl = figureEl.children[0]; // <a> element
+
+                // 获取原图片大小
+                size = linkEl.getAttribute('data-size').split('x');
+
+                // create slide object
+                item = {
+                    src: linkEl.getAttribute('href'),
+                    w: parseInt(size[0], 10),
+                    h: parseInt(size[1], 10)
+                };
+
+
+
+                if (figureEl.children.length > 1) {
+                    // <figcaption> content
+                    item.title = figureEl.children[1].innerHTML;
+                }
+
+                if (linkEl.children.length > 0) {
+                    // <img> thumbnail element, retrieving thumbnail url
+                    item.msrc = linkEl.children[0].getAttribute('src');
+                }
+
+                item.el = figureEl; // save link to element for getThumbBoundsFn
+                items.push(item);
+            }
+
+            return items;
+        };
+
+        // find nearest parent element
+        var closest = function closest(el, fn) {
+            return el && (fn(el) ? el : closest(el.parentNode, fn));
+        };
+
+        // triggers when user clicks on thumbnail
+        var onThumbnailsClick = function (e) {
+            e = e || window.event;
+            e.preventDefault ? e.preventDefault() : e.returnValue = false;
+
+            var eTarget = e.target || e.srcElement;
+
+            // find root element of slide
+            var clickedListItem = closest(eTarget, function (el) {
+                return (el.tagName && el.tagName.toUpperCase() === 'FIGURE');
+            });
+
+            if (!clickedListItem) {
+                return;
+            }
+
+            // find index of clicked item by looping through all child nodes
+            // alternatively, you may define index via data- attribute
+            var clickedGallery = clickedListItem.parentNode,
+                childNodes = clickedListItem.parentNode.childNodes,
+                numChildNodes = childNodes.length,
+                nodeIndex = 0,
+                index;
+
+            for (var i = 0; i < numChildNodes; i++) {
+                if (childNodes[i].nodeType !== 1) {
+                    continue;
+                }
+
+                if (childNodes[i] === clickedListItem) {
+                    index = nodeIndex;
+                    break;
+                }
+                nodeIndex++;
+            }
+
+
+
+            if (index >= 0) {
+                // open PhotoSwipe if valid index found
+                openPhotoSwipe(index, clickedGallery);
+            }
+            return false;
+        };
+
+        // parse picture index and gallery index from URL (#&pid=1&gid=2)
+        var photoswipeParseHash = function () {
+            var hash = window.location.hash.substring(1),
+                params = {};
+
+            if (hash.length < 5) {
+                return params;
+            }
+
+            var vars = hash.split('&');
+            for (var i = 0; i < vars.length; i++) {
+                if (!vars[i]) {
+                    continue;
+                }
+                var pair = vars[i].split('=');
+                if (pair.length < 2) {
+                    continue;
+                }
+                params[pair[0]] = pair[1];
+            }
+
+            if (params.gid) {
+                params.gid = parseInt(params.gid, 10);
+            }
+
+            return params;
+        };
+
+        var openPhotoSwipe = function (index, galleryElement, disableAnimation, fromURL) {
+            var pswpElement = document.querySelectorAll('.pswp')[0],
+                gallery,
+                options,
+                items;
+
+            items = parseThumbnailElements(galleryElement);
+
+
+            // define options (if needed)
+            options = {
+
+                // define gallery index (for URL)
+                galleryUID: galleryElement.getAttribute('data-pswp-uid'),
+
+                getThumbBoundsFn: function (index) {
+                    // See Options -> getThumbBoundsFn section of documentation for more info
+                    var thumbnail = items[index].el.getElementsByTagName('img')[0], // find thumbnail
+                        pageYScroll = window.pageYOffset || document.documentElement.scrollTop,
+                        rect = thumbnail.getBoundingClientRect();
+
+                    return {
+                        x: rect.left,
+                        y: rect.top + pageYScroll,
+                        w: rect.width
+                    };
+                },
+                // closeOnVerticalDrag  :false
+                tapToClose: true,
+                arrowEl: false,
+                shareEl: false,
+                fullscreenEl: false
+
+
+            };
+
+            // PhotoSwipe opened from URL
+            if (fromURL) {
+                if (options.galleryPIDs) {
+                    // parse real index when custom PIDs are used 
+                    // http://photoswipe.com/documentation/faq.html#custom-pid-in-url
+                    for (var j = 0; j < items.length; j++) {
+                        if (items[j].pid == index) {
+                            options.index = j;
+                            break;
+                        }
+                    }
+                } else {
+                    // in URL indexes start from 1
+                    options.index = parseInt(index, 10) - 1;
+                }
+            } else {
+                options.index = parseInt(index, 10);
+            }
+
+            // exit if index not found
+            if (isNaN(options.index)) {
+                return;
+            }
+
+            if (disableAnimation) {
+                options.showAnimationDuration = 0;
+            }
+
+            // Pass data to PhotoSwipe and initialize it
+            gallery = new PhotoSwipe(pswpElement, PhotoSwipeUI_Default, items, options);
+
+            gallery.init();
+
+            // 关闭事件
+            // gallery.listen('close', function () {
+            //     $('.download').hide();
+            // });
+
+        };
+
+        // loop through all gallery elements and bind events
+        var galleryElements = document.querySelectorAll(gallerySelector);
+
+        for (var i = 0, l = galleryElements.length; i < l; i++) {
+            galleryElements[i].setAttribute('data-pswp-uid', i + 1);
+            galleryElements[i].onclick = onThumbnailsClick;
+        }
+
+
+        // Parse URL and open gallery if it contains #&pid=3&gid=1
+        var hashData = photoswipeParseHash();
+        if (hashData.pid && hashData.gid) {
+            openPhotoSwipe(hashData.pid, galleryElements[hashData.gid - 1], true, true);
+        }
+    };
+
+    initPhotoSwipeFromDOM('.my-gallery');
+
+    // 举报
+    // var index=layer.open({
+    //     content: '',
+    //     btn: ['举报', '取消'],
+    //     skin: 'footer skin-report',
+    //     yes: function (index) {}
+    // });
+
+    //图片编辑
+    function imgPreview(imgFile){
+        var layerIndex = layer.open({
+            type: 1,
+            content:Zepto('.layer-image-edit').html(),
+            //anim: 'up',
+            style: 'position:fixed; left:0; top:0; width:100%; height:100%; border: none; -webkit-animation-duration: .5s; animation-duration: .5s;',
+            success:function(elem){
+                Zepto(elem).find('.layui-m-layercont').css('height','100%')
+                var imageEdit =  new ImageEdit({rootElement:Zepto(elem).find('.edit_image')[0],imgPath:'/Resources/2.0/images/count.jpg',imgFile})
+
+                Zepto(elem).find('.layer-image .complete').on('click',function(){
+                    var image = imageEdit.getCurrentImage()
+                    console.log('getCurrentImageIsEdit',imageEdit.getCurrentImageIsEdit()) 
+                    //doUploadImg(imgFile,isEdited)
+                    layer.closeAll()
+                })
+
+                Zepto(elem).find('.layer-image .cancel').on('click',function(){
+                    layer.closeAll()
+                })
+            }
+        })
+        
+    }
+
+    Zepto('#photo').on('change',function(){
+        var imgFile = event.target.files;
+        imgPreview(imgFile[0])
+    })
+
+    imgPreview()
+
+   
+</script>
+
 </html>

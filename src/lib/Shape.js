@@ -9,13 +9,6 @@ class Shape{
         this.startPos = startPos
         this.pointList = [] 
     }
-    
-}
-
-class Pen extends Shape{
-    constructor(props){
-        super(props)
-    }
 
     draw(canvasContext){
         const {lineWidth,strokeStyle,startPos} = this
@@ -38,34 +31,47 @@ class Pen extends Shape{
             canvasContext.stroke()
         }
     }
+    
+}
 
+class Pen extends Shape{
+    constructor(props){
+        super(props)
+    }
+    draw(canvasContext){
+        canvasContext.globalCompositeOperation = "source-over"
+        super.draw(canvasContext)
+    }
 }
 
 class Eraser extends Shape{
-    draw(canvasContext,originContext){
-        const {lineWidth,strokeStyle,startPos} = this
-        canvasContext.beginPath();
-        canvasContext.lineWidth = lineWidth;
-        canvasContext.strokeStyle = strokeStyle;
-        canvasContext.moveTo(...startPos)
-        if(this.pointList && originContext){
-            this.pointList.forEach(point=>{
-                const [offsetX,offsetY]  = point
-                let pxs = originContext.getImageData(offsetX-lineWidth/2,offsetY-lineWidth/2, lineWidth, lineWidth);
-                canvasContext.putImageData(pxs, offsetX-lineWidth/2, offsetY-lineWidth/2);
-            })
-        }
+    draw(canvasContext){
+        canvasContext.globalCompositeOperation = "destination-out"
+        super.draw(canvasContext)
     }
+    // draw(canvasContext){
+    //     const {lineWidth,startPos} = this
+    //     canvasContext.lineCap = "round";　　//设置线条两端为圆弧
+    //     canvasContext.lineJoin = "round";　　//设置线条转折为圆弧
+    //     canvasContext.lineWidth = lineWidth;　　
+    //     canvasContext.globalCompositeOperation = "destination-out";
 
-    addPoint(point,canvasContext,originContext){
-        this.pointList.push(point)
-        const {lineWidth} = this
-        if(canvasContext && originContext){
-            const [offsetX,offsetY]  = point
-            let pxs = originContext.getImageData(offsetX-lineWidth/2,offsetY-lineWidth/2, lineWidth, lineWidth);
-            canvasContext.putImageData(pxs, offsetX-lineWidth/2, offsetY-lineWidth/2);
-        }
-    }
+    //     canvasContext.save();
+    //     canvasContext.beginPath()
+    //     canvasContext.arc(...startPos,lineWidth/2,0,2*Math.PI);
+    //     canvasContext.fill();
+    //     canvasContext.restore();
+    // }
+
+    // addPoint(point,canvasContext){
+    //     this.pointList.push(point)
+    //     if(canvasContext){
+    //         canvasContext.save()
+    //         canvasContext.lineTo(...point) //鼠标点下去的位置
+    //         canvasContext.stroke()
+    //         canvasContext.restore();
+    //     }
+    // }
 
     
 

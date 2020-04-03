@@ -1,4 +1,4 @@
-import './index.scss'
+//import './index.scss'
 import CanvasManager from './lib/CanvasManager'
 import ToolManager from './lib/ToolManager'
 

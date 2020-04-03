@@ -14,9 +14,10 @@ const extractSass = new ExtractTextWebpackPlugin({
 
 module.exports = {
     entry:'./src/index.js',
+    mode:'development',
     output:{
         path: path.resolve(__dirname,'dist'),
-        filename:'lib/image_edit.js',
+        filename:'lib/image-edit.js',
         library:'ImageEdit',
         libraryTarget:'umd',
         libraryExport: 'default',
@@ -28,7 +29,7 @@ module.exports = {
         open:true,
         port:4000,
     },
-    devtool:'inline-source-map',
+    //devtool:'inline-source-map',
     plugins:[
         new CleanWebpackPlugin(),
         new webpack.HotModuleReplacementPlugin(),

@@ -81,10 +81,10 @@ class EraserTool extends ShapeTool{
         this.Shape = Eraser
     }
 
-    onMouseMove = () => {
-        const {canvasContext,originContext,canvasElement} = this.currentCanvasManager
-        this.currentShape.addPoint(getCurrentPos(event,canvasElement),canvasContext,originContext)
-    }
+    // onMouseMove = () => {
+    //     const {canvasContext,originContext,canvasElement} = this.currentCanvasManager
+    //     this.currentShape.addPoint(getCurrentPos(event,canvasElement),canvasContext,originContext)
+    // }
 }
 
 export  {PenTool,EraserTool}

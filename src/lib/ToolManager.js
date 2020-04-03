@@ -59,7 +59,7 @@ const viceToolRelated = {
             const className = 'tool_'+item
             editButton.classList.add('tool_but')
             editButton.classList.add(className)
-            editButton.textContent = item
+            //editButton.textContent = item
             $rootElement.append(editButton)
             const shapeTool = new ShapeTool()
             editButton.onclick = ()=>{
